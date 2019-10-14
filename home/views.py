@@ -29,7 +29,7 @@ class CreatePage(generic.CreateView):
     model = Page
     fields = ['title']
     template_name = 'home/create_page.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('dashboard')
 
 
     def form_valid(self, form):
@@ -38,13 +38,19 @@ class CreatePage(generic.CreateView):
         return redirect('home')
 
 
-class DetailsPage(generic.CreateView):
-    pass
+class DetailPage(generic.DeleteView):
+    model = Page
+    template_name = 'home/detail_page.html'
 
 
-class UpdatePage(generic.CreateView):
-    pass
+class UpdatePage(generic.UpdateView):
+    model = Page
+    template_name = 'home/update_page.html'
+    fields = ['title']
+    success_url = reverse_lazy('dashboard')
 
 
-class DeletePage(generic.CreateView):
-    pass
+class DeletePage(generic.DeleteView):
+    model = Page
+    template_name = 'home/delete_page.html'
+    success_url = reverse_lazy('dashboard')

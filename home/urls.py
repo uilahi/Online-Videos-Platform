@@ -15,7 +15,7 @@ urlpatterns = [
 
     #CREATE PAGE
     path('page/create', views.CreatePage.as_view(), name='create_page'),
-    path('page/<int:pk>', views.DetailsPage.as_view(), name='detail_page'),
+    path('page/<int:pk>', views.DetailPage.as_view(), name='detail_page'),
     path('page/<int:pk>/update', views.UpdatePage.as_view(), name='update_page'),
     path('page/<int:pk>/delete', views.DeletePage.as_view(), name='delete_page')
 ]
