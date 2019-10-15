@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 django = "*"
 psycopg2 = "*"
+django-widget-tweaks = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"

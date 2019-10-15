@@ -4,12 +4,34 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate,login
 from django.views import generic
 from .models import Page, Video
+from .forms import VideoForm, SearchForm
+import urllib
+import requests
+from django.http import Http404
+
 
 def home(request):
     return render(request, 'home/home.html')
 
+
 def dashboard(request):
     return render(request, 'home/dashboard.html')
+
+
+def addvideo(request, pk):
+    form = VideoForm()
+    search_form = SearchForm()
+
+    if request.method == 'POST':
+
+        filled_form = VideoForm(request.POST)
+        if filled_form.is_valid():
+            video = Video()
+            video.url = filled_form.cleaned_data['url']
+            video.page = Page.objects.get(pk=pk)
+            video = Video()
+            video.save()
+    return render(request, 'home/add_video.html', {'form': form, 'search_form': search_form})
 
 
 class SignUp(generic.CreateView):
@@ -30,7 +52,6 @@ class CreatePage(generic.CreateView):
     fields = ['title']
     template_name = 'home/create_page.html'
     success_url = reverse_lazy('dashboard')
-
 
     def form_valid(self, form):
         form.instance.user = self.request.user

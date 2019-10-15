@@ -12,6 +12,6 @@ class Page(models.Model):
 
 class Video(models.Model):
     title = models.CharField(max_length=255)
-    url = models.TextField()
+    url = models.URLField(max_length=255)
     page = models.ForeignKey(Page, on_delete=models.CASCADE)
     youtube_id = models.CharField(max_length=255, default=title)
