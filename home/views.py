@@ -7,7 +7,7 @@ from .models import Page, Video
 from .forms import VideoForm, SearchForm
 import urllib
 import requests
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.forms.utils import ErrorList
 from django.contrib.auth.models import User
 
@@ -24,10 +24,21 @@ def dashboard(request):
     return render(request, 'home/dashboard.html')
 
 
+def video_search(request):
+    search_form = SearchForm(request.GET)
+    if search_form.is_valid():
+        encoded_search_term = urllib.parse.quote(search_form.cleaned_data['search_term'])
+        response = requests.get(
+            f'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=6&q={ encoded_search_term }&key={ YOUTUBE_API_KEY }')
+        return JsonResponse(response.json())
+    return JsonResponse({'error': 'Not able to validate form'})
+
+
 def addvideo(request, pk):
     form = VideoForm()
     search_form = SearchForm()
     page = Page.objects.get(pk=pk)
+    print(page.id)
 
     if not page.user == request.user:
         raise Http404
@@ -56,7 +67,13 @@ def addvideo(request, pk):
             else:
                 errors = form._errors.setdefault('url', ErrorList())
                 errors.append('Needs to be a YouTube URL')
-    return render(request, 'home/add_video.html', {'form': form, 'search_form': search_form})
+    return render(request, 'home/add_video.html', {'form': form, 'search_form': search_form, 'page': page})
+
+
+class DeleteVideo(generic.DeleteView):
+    model = Video
+    template_name = 'home/delete_video.html'
+    success_url = reverse_lazy('dashboard')
 
 
 class SignUp(generic.CreateView):
