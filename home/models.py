@@ -14,4 +14,9 @@ class Video(models.Model):
     title = models.CharField(max_length=255)
     url = models.URLField(max_length=255)
     page = models.ForeignKey(Page, on_delete=models.CASCADE)
-    youtube_id = models.CharField(max_length=255, default=title)
+    youtube_id = models.CharField(max_length=255)
+    # obj_id = models.ForeignKey(Page, blank=True, null=True)
+
+    def __str__(self):
+        return self.title[:15]
+

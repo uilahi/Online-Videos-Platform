@@ -5,14 +5,19 @@
 
   <form method="post" id="submit_video">
     {% csrf_token %}
-    {{ form.as_p }}
-<input class="btn btn-primary" type="submit" value="Add" />
+
+{% for field in form %}
+    <div class="form-group {% if field.errors %}alert alert-danger{% endif %}">
+        {{ form.as_p }}
+    </div>
+    {% endfor %}
+      <input class="btn btn-primary" type="submit" value="Add" />
 </form>
     <h2>OR</h2>
 
     <form >
 
-    {{ search_form }}
+    {{ search_form.as_p }}
         </form>
 
     </div>
