@@ -21,7 +21,8 @@ def home(request):
 
 
 def dashboard(request):
-    return render(request, 'home/dashboard.html')
+    pages = Page.objects.filter(user=request.user)
+    return render(request, 'home/dashboard.html', {'pages': pages})
 
 
 def video_search(request):
@@ -98,10 +99,10 @@ class CreatePage(generic.CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         super(CreatePage, self).form_valid(form)
-        return redirect('home')
+        return redirect('dashboard')
 
 
-class DetailPage(generic.DeleteView):
+class DetailPage(generic.DetailView):
     model = Page
     template_name = 'home/detail_page.html'
 

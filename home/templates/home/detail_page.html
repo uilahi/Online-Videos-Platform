@@ -1,8 +1,36 @@
 
 {% extends 'base.html' %}
 {% block content %}
+<div class="container">
+<h2><a href="{% url 'detail_page' page.id %}" >{{ page.title }} </a></h2>
+    {% if user.id == page.user.id %}
 
-<h1>{{ page.title }}</h1>
-<h4 class="text-muted">Created By: {{ page.user.username }}</h4>
+    <a href="{% url 'update_page' page.id %}" class='btn btn-primary' >Update Page</a>
+    <a href="{% url 'add_video' page.id %}" class='btn btn-primary' >Add Video</a>
+    <a href="{% url 'delete_page' page.id %}" class='btn btn-danger' >Delete Page</a>
+    {% endif %}
 
+    <div class="row">
+
+
+            {% for video in page.video_set.all %}
+
+                <div class="col-md-4 mt-3">
+      <div class="card mb-4 shadow-sm">
+        <iframe width="100%" height="225" src="https://www.youtube.com/embed/{{ video.youtube_id }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="card-body">
+          <p class="card-text">{{ video.title }}</p>
+             {% if user.id == page.user.id %}
+
+    <a href="{% url 'delete_video' video.id %}" class='btn btn-danger' >Delete Video</a>
+    {% endif %}
+        </div>
+      </div>
+    </div>
+
+            {% endfor %}
+
+</div>
+    <h4 class="text-muted">Created By: {{ page.user.username }}</h4>
+    </div>
 {% endblock %}

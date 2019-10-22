@@ -8,8 +8,11 @@
 <form method="POST">
 {% csrf_token %}
 
-            {{ form.as_p }}
-
+{% for field in form %}
+    <div class="form-group {% if field.errors %}alert alert-danger{% endif %}">
+        {{ form.as_p }}
+    </div>
+    {% endfor %}
 <input class="btn btn-primary" type="submit" value="Create Page" />
 </form>
     </div>
