@@ -3,22 +3,30 @@
 {% block content %}
 <div class="container">
     <div class="text centre">
+        <br>
 
 <h1>
     {{ user.username }}'s Dashboard
     </h1>
     <a href="{% url 'create_page' %}" class='btn btn-primary' >Create New Page</a>
+                <br>
 
 
-</div>
+
+</div>        <br>
+
 
         {% for page in pages %}
     <h2>
 
     <a href="{% url 'detail_page' page.id %}" >{{ page.title }} </a></h2>
+            <br>
+
     <a href="{% url 'update_page' page.id %}" class='btn btn-primary' >Update Page</a>
     <a href="{% url 'add_video' page.id %}" class='btn btn-primary' >Add Video</a>
     <a href="{% url 'delete_page' page.id %}" class='btn btn-danger' >Delete Page</a>
+        <br>
+        <br>
 
     <div class="row">
 

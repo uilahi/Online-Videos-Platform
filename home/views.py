@@ -17,7 +17,9 @@ YOUTUBE_API_KEY= 'AIzaSyDGtRVYIzaUEgJx1gWvhAZGAT0YFujpWFc'
 
 
 def home(request):
-    return render(request, 'home/home.html')
+    recent_pages = Page.objects.all().order_by('-id')[:3]
+    popular_pages = [Page.objects.get(pk=11), Page.objects.get(pk=9)]
+    return render(request, 'home/home.html', {'recent_pages': recent_pages, 'popular_pages': popular_pages})
 
 
 def dashboard(request):

@@ -1,8 +1,67 @@
-
 {% extends 'base.html' %}
 {% block content %}
+<section class="jumbotron text-center text-dark" style="background-color:#AEF3B5;">
+  <div class="container">
+    <h1 class="jumbotron-heading">What are your Favourite Videos?</h1>
+    <p class="text-dark lead text-muted">You  have a top 10 list and it's time to share them with the world. Click the button below to get started.</p>
+    <p>
+      <a href="{% url 'create_page' %}" class="btn btn-primary">Create Your Page </a>
+    </p>
+  </div>
+</section>
 
-<h1>
-    Home Page Of my Fav Videos
-</h1>
+
+<div class="container">
+  <h1 class="text-center">Popular Pages</h1>
+  {% for page in popular_pages %}
+    <h2>
+
+    <a href="{% url 'detail_page' page.id %} text-center" >{{ page.title }} </a></h2>
+            <br>
+
+
+        <br>
+        <br>
+
+    <div class="row">
+
+
+            {% for video in page.video_set.all %}
+
+                <div class="col-md-4 mt-3">
+      <div class="card mb-4 shadow-sm">
+        <iframe width="100%" height="225" src="https://www.youtube.com/embed/{{ video.youtube_id }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="card-body">
+          <p class="card-text">{{ video.title }}</p>
+        </div>
+      </div>
+    </div>
+            {% endfor %}
+    </div>
+
+
+        {% endfor %}
+
+
+  <h1 class="text-center">Recent Pages</h1>
+  {% for page in recent_pages %}
+
+<h2><a href="{% url 'detail_page' page.id %}">{{ page.title }}</a></h2>
+
+  <div class="row">
+    {% for video in page.video_set.all %}
+    <div class="col-md-4 mt-3">
+      <div class="card mb-4 shadow-sm">
+        <iframe width="100%" height="225" src="https://www.youtube.com/embed/{{ video.youtube_id }}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="card-body">
+          <p class="card-text">{{ video.title }}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    </div>
+  {% endfor %}
+
+
+</div>
 {% endblock %}
