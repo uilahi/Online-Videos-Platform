@@ -9,11 +9,11 @@ import urllib
 import requests
 from django.http import Http404, JsonResponse
 from django.forms.utils import ErrorList
-from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-
-YOUTUBE_API_KEY= 'AIzaSyDGtRVYIzaUEgJx1gWvhAZGAT0YFujpWFc'
+YOUTUBE_API_KEY = 'AIzaSyDGtRVYIzaUEgJx1gWvhAZGAT0YFujpWFc'
 
 
 def home(request):
@@ -22,11 +22,13 @@ def home(request):
     return render(request, 'home/home.html', {'recent_pages': recent_pages, 'popular_pages': popular_pages})
 
 
+@login_required
 def dashboard(request):
     pages = Page.objects.filter(user=request.user)
     return render(request, 'home/dashboard.html', {'pages': pages})
 
 
+@login_required
 def video_search(request):
     search_form = SearchForm(request.GET)
     if search_form.is_valid():
@@ -37,6 +39,7 @@ def video_search(request):
     return JsonResponse({'error': 'Not able to validate form'})
 
 
+@login_required
 def addvideo(request, pk):
     form = VideoForm()
     search_form = SearchForm()
@@ -73,15 +76,21 @@ def addvideo(request, pk):
     return render(request, 'home/add_video.html', {'form': form, 'search_form': search_form, 'page': page})
 
 
-class DeleteVideo(generic.DeleteView):
+class DeleteVideo(LoginRequiredMixin, generic.DeleteView):
     model = Video
     template_name = 'home/delete_video.html'
     success_url = reverse_lazy('dashboard')
 
+    def get_object(self):
+        video = super(DeleteVideo, self).get_object()
+        if not video.page.user == self.request.user:
+            raise Http404
+        return video
+
 
 class SignUp(generic.CreateView):
     form_class = UserCreationForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('dashboard')
     template_name = 'registration/signup.html'
 
     def form_valid(self, form):
@@ -92,7 +101,7 @@ class SignUp(generic.CreateView):
         return view
 
 
-class CreatePage(generic.CreateView):
+class CreatePage(LoginRequiredMixin, generic.CreateView):
     model = Page
     fields = ['title']
     template_name = 'home/create_page.html'
@@ -109,14 +118,20 @@ class DetailPage(generic.DetailView):
     template_name = 'home/detail_page.html'
 
 
-class UpdatePage(generic.UpdateView):
+class UpdatePage(LoginRequiredMixin, generic.UpdateView):
     model = Page
     template_name = 'home/update_page.html'
     fields = ['title']
     success_url = reverse_lazy('dashboard')
 
+    def get_object(self):
+        page = super(UpdatePage, self).get_object()
+        if not page.user == self.request.user:
+            raise Http404
+        return page
 
-class DeletePage(generic.DeleteView):
+
+class DeletePage(LoginRequiredMixin, generic.DeleteView):
     model = Page
     template_name = 'home/delete_page.html'
     success_url = reverse_lazy('dashboard')
